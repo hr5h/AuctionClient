@@ -10,6 +10,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.auctionclient.presentation.authorization.AuthorizationScreen
+import com.example.auctionclient.presentation.authorization.login.LoginScreen
+import com.example.auctionclient.presentation.authorization.register.RegisterScreen
 import com.example.auctionclient.presentation.lot_detail.LotDetailScreen
 import com.example.auctionclient.presentation.lot_list.LotListScreen
 import com.example.auctionclient.ui.theme.AuctionClientTheme
@@ -32,8 +35,17 @@ class MainActivity : ComponentActivity() {
 fun MyAppNavHost(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = "lot_list"
+        startDestination = "authorization"
     ) {
+        composable("authorization") {
+            AuthorizationScreen(navController = navController)
+        }
+        composable("login") {
+            LoginScreen(navController = navController)
+        }
+        composable("register") {
+            RegisterScreen(navController = navController)
+        }
         composable("lot_list") {
             LotListScreen(navController = navController)
         }

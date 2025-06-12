@@ -40,13 +40,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.auctionclient.domain.Lot
+import com.example.auctionclient.presentation.lot_detail.LotDetailViewModel
 import com.example.auctionclient.ui.theme.Purple40
 
 @Composable
 fun LotListScreen(
+    viewModel: LotListViewModel = hiltViewModel(),
     navController: NavHostController,
 ) {
-    val viewModel: LotListViewModel = hiltViewModel()
     val lots = viewModel.lots
     val lotListState = viewModel.lotListState.collectAsState()
     val lotState = viewModel.lotState.collectAsState()

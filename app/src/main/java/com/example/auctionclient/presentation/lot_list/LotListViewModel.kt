@@ -76,10 +76,10 @@ class LotListViewModel @Inject constructor(
 
     fun submitLot() {
         //TODO Lot
-        if (_lotState.value.title != "" ||
-            _lotState.value.description != "" ||
-            _lotState.value.imageUrl != "" ||
-            _lotState.value.startPrice < 0f ||
+        if (_lotState.value.title != "" &&
+            _lotState.value.description != "" &&
+            _lotState.value.imageUrl != "" &&
+            _lotState.value.startPrice < 0f &&
             _lotState.value.endTime < 0f) {
             _lotState.update { LotState() }
             showDialogLot(false)
