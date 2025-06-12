@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,6 +20,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -38,8 +40,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.example.auctionclient.domain.Bid
 import com.example.auctionclient.ui.theme.Purple40
+import kotlin.math.roundToInt
 
 @Composable
 fun LotDetailScreen(
@@ -71,24 +75,64 @@ fun LotDetailScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 25.dp, start = 10.dp, end = 10.dp, bottom = 10.dp),
+                    .padding(top = 25.dp, start = 10.dp, end = 10.dp, bottom = 10.dp)
             ) {
                 Column(
                     modifier = Modifier.padding(10.dp)
                 ) {
-                    Text(text = "Название: ${lot.title}")
-                    Text(text = "Описание: ${lot.description}")
-                    Column(
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(10.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "Название: ${lot.title}",
+                            modifier = Modifier.padding(bottom = 4.dp, top = 10.dp),
+                            fontSize = 26.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        AsyncImage(
+                            model = "https://masterpiecer-images.s3.yandex.net/5fab5867404521d:upscaled",
+                            contentDescription = "imageLot",
+                            modifier = Modifier
+                                .size(150.dp)
+                                .clip(RoundedCornerShape(15.dp))
+                        )
+                    }
+                    Text(
+                        text = "Описание: ${lot.description}",
+                        fontSize = 18.sp
+                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth(0.7f)
+                            .align(Alignment.End)
+                            .padding(top = 10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = "Стартовая цена: ${lot.startPrice}", fontSize = 18.sp)
-                        Text(text = "Текущая цена: ${lot.currentPrice}", fontSize = 18.sp)
-                        Text(text = "Осталось времени: ${lot.endTime}", fontSize = 18.sp)
+                        Text(
+                            text = "Стартовая цена: ${lot.startPrice.roundToInt()}",
+                            fontSize = 18.sp,
+                            modifier = Modifier
+                                .padding(vertical = 4.dp)
+                                .align(Alignment.Start)
+                        )
+                        Text(
+                            text = "Текущая цена: ${lot.currentPrice.roundToInt()}",
+                            fontSize = 18.sp,
+                            modifier = Modifier
+                                .padding(vertical = 4.dp)
+                                .align(Alignment.Start)
+                        )
+                        Text(
+                            text = "Осталось времени: ${lot.endTime}",
+                            fontSize = 18.sp,
+                            modifier = Modifier
+                                .padding(vertical = 4.dp)
+                                .align(Alignment.Start)
+                        )
                     }
-
                 }
             }
             Text(text = "Ставки:", color = Purple40, fontWeight = FontWeight.Bold, fontSize = 26.sp)
@@ -197,7 +241,11 @@ fun BidBottomSheet(
                 BidAmount.Amount50,
                 BidAmount.Amount100
             )
-            ChipGroupCompose(chipList = chipList, selected = bidState.selected, changeSelected = changeSelected)
+            ChipGroupCompose(
+                chipList = chipList,
+                selected = bidState.selected,
+                changeSelected = changeSelected
+            )
             Button(
                 onClick = {
                     submitBid()
