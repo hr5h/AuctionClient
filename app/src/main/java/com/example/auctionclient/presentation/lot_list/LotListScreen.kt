@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.auctionclient.domain.Lot
@@ -47,9 +48,16 @@ fun LotListScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(gradient)
+                .background(gradient),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Auction")
+            Text(
+                text = "Аукцион",
+                modifier = Modifier.padding(15.dp),
+                color = Color.White,
+                fontSize = 26.sp,
+                fontWeight = FontWeight.Bold
+            )
             LazyColumn(
                 modifier = Modifier.weight(1f)
             ) {
@@ -80,13 +88,16 @@ fun LotView(
                 .padding(10.dp),
         ) {
             Text(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                text = lot.title
+                modifier = Modifier
+                    .fillMaxWidth(0.6f)
+                    .align(Alignment.End),
+                text = lot.title,
             )
             Row(
                 Modifier
-                    .fillMaxWidth(0.5f)
+                    .fillMaxWidth(0.6f)
                     .align(Alignment.End)
+                    .padding(top = 40.dp)
             ) {
                 Text(
                     text = "Текущая цена:",
@@ -99,7 +110,7 @@ fun LotView(
             }
             Row(
                 Modifier
-                    .fillMaxWidth(0.5f)
+                    .fillMaxWidth(0.6f)
                     .align(Alignment.End)
             ) {
                 Text(

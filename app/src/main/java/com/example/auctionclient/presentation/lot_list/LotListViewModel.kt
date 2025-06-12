@@ -16,7 +16,7 @@ class LotListViewModel @Inject constructor() : ViewModel() {
 
     init {
         viewModelScope.launch {
-            repeat(5) { ind ->
+            repeat(10) { ind ->
                 delay(1000)
                 lots.add(
                     Lot(
