@@ -4,10 +4,13 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.auctionclient.domain.Lot
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LotListViewModel : ViewModel() {
+@HiltViewModel
+class LotListViewModel @Inject constructor() : ViewModel() {
 
     val lots = mutableStateListOf<Lot>()
 

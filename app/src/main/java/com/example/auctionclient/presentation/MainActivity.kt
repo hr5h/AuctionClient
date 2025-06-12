@@ -5,13 +5,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.auctionclient.presentation.lot_detail.LotDetailScreen
 import com.example.auctionclient.presentation.lot_list.LotListScreen
 import com.example.auctionclient.ui.theme.AuctionClientTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,9 +37,11 @@ fun MyAppNavHost(navController: NavHostController) {
         composable("lot_list") {
             LotListScreen(navController = navController)
         }
-        composable("lot_detail/{lotId}") { backStackEntry ->
-            val lotId = backStackEntry.arguments?.getString("lotId") ?: ""
-            LotDetailScreen(navController = navController, lotId = lotId)
-        }
+        composable(
+            route = "lot_detail/{lotId}",
+            arguments = listOf(navArgument("lotId") { type = NavType.LongType })
+            ) {
+                LotDetailScreen(navController = navController)
+            }
     }
 }

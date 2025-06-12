@@ -22,16 +22,15 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.auctionclient.domain.Bid
 import com.example.auctionclient.ui.theme.Purple40
 
 @Composable
 fun LotDetailScreen(
-    viewModel: LotDetailViewModel = viewModel(),
+    viewModel: LotDetailViewModel = hiltViewModel(),
     navController: NavHostController,
-    lotId: String
 ) {
     val lot = viewModel.lot
     val bids = viewModel.bids.filter { it.lotId == lot.id }
@@ -46,7 +45,6 @@ fun LotDetailScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .background(gradient)
     ) { innerPadding ->
         Column(
             modifier = Modifier

@@ -1,5 +1,6 @@
 package com.example.auctionclient.presentation.lot_list
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,22 +16,38 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.auctionclient.domain.Lot
+import com.example.auctionclient.ui.theme.Purple40
 
 @Composable
 fun LotListScreen(
-    viewModel: LotListViewModel = viewModel(),
     navController: NavHostController,
 ) {
+    val viewModel: LotListViewModel = viewModel()
     val lots = viewModel.lots
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+
+    val gradient = Brush.verticalGradient(
+        0.0f to Purple40,
+        1.0f to Color.White,
+        startY = 0.0f,
+        endY = 1600.0f
+    )
+
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+    ) { innerPadding ->
         Column(
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(gradient)
         ) {
             Text(text = "Auction")
             LazyColumn(

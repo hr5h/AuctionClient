@@ -1,18 +1,26 @@
 package com.example.auctionclient.presentation.lot_detail
 
 import androidx.compose.runtime.mutableStateListOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.auctionclient.domain.Bid
 import com.example.auctionclient.domain.Lot
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 import kotlin.random.Random
 
-class LotDetailViewModel(): ViewModel() {
+@HiltViewModel
+class LotDetailViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle
+) : ViewModel() {
+
+    private val lotId = savedStateHandle.get<Long>("lotId") ?: 0L
 
     val lot = Lot(
-        id = 1,
-        title = "Name1",
+        id = lotId,
+        title = "Name$lotId",
         description = "DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescription",
         startPrice = 1000f,
         currentPrice = 1500f,
