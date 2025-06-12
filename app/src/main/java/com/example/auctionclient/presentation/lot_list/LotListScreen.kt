@@ -2,35 +2,40 @@ package com.example.auctionclient.presentation.lot_list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
@@ -43,6 +48,8 @@ fun LotListScreen(
 ) {
     val viewModel: LotListViewModel = hiltViewModel()
     val lots = viewModel.lots
+    val lotListState = viewModel.lotListState.collectAsState()
+    val lotState = viewModel.lotState.collectAsState()
 
     val gradient = Brush.verticalGradient(
         0.0f to Purple40,
@@ -76,6 +83,33 @@ fun LotListScreen(
                     LotView(lot, navController)
                 }
             }
+            Button(
+                onClick = {
+                    viewModel.showDialogLot(true)
+                },
+                modifier = Modifier.padding(15.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Purple40,
+                    contentColor = Color.White
+                )
+            ) {
+                Text(
+                    text = "Создать лот",
+                )
+            }
+        }
+        if (lotListState.value.showDialogLot) {
+            DialogLot(
+                onDismiss = { viewModel.showDialogLot(false) },
+                submitLot = viewModel::submitLot,
+                lotState = lotState,
+                changeTitle = viewModel::changeTitle,
+                changeDesciption = viewModel::changeDescription,
+                changeImageUrl = viewModel::changeImageUrl,
+                changeStartPrice = viewModel::changeStartPrice,
+                changeEndTime = viewModel::changeEndTime,
+            )
         }
     }
 }
@@ -149,4 +183,92 @@ fun LotView(
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DialogLot(
+    onDismiss: () -> Unit,
+    submitLot: () -> Unit,
+    lotState: State<LotState>,
+    changeTitle: (String) -> Unit,
+    changeDesciption: (String) -> Unit,
+    changeImageUrl: (String) -> Unit,
+    changeStartPrice: (String) -> Unit,
+    changeEndTime: (String) -> Unit,
+) {
+    Dialog(
+        onDismissRequest = {
+            onDismiss()
+        }
+    ) {
+        Card(
+            modifier = Modifier
+                .fillMaxHeight(0.52f),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(15.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                LotDialogTextField("Название:", lotState.value.title, changeTitle, false)
+                LotDialogTextField("Описание:", lotState.value.description, changeDesciption, false)
+                LotDialogTextField("Изображение:", lotState.value.imageUrl, changeImageUrl, false)
+                LotDialogTextField("Стартовая цена:", lotState.value.startPrice.toString(), changeStartPrice, true)
+                LotDialogTextField("Время лота:", lotState.value.endTime.toString(), changeEndTime, true)
+                Button(
+                    onClick = {
+                        submitLot()
+                    },
+                    modifier = Modifier.padding(15.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Purple40,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(
+                        text = "Создать лот",
+                    )
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LotDialogTextField(
+    label: String,
+    value: String,
+    onValueChanged: (String) -> Unit,
+    isNumber: Boolean,
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChanged,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 20.dp, end = 20.dp, bottom = 10.dp),
+        shape = RoundedCornerShape(10.dp),
+        singleLine = true,
+        keyboardOptions = if (isNumber) KeyboardOptions(
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Done
+        ) else KeyboardOptions.Default,
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = Purple40,
+            unfocusedBorderColor = Purple40,
+            focusedTextColor = Purple40,
+            unfocusedTextColor = Purple40,
+            cursorColor = Purple40,
+            focusedLabelColor = Purple40,
+            unfocusedLabelColor = Purple40
+        ),
+        label = {
+            Text(text = label)
+        }
+    )
 }

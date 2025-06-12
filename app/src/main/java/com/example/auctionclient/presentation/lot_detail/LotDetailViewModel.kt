@@ -11,6 +11,7 @@ import com.example.auctionclient.domain.Lot
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -26,10 +27,10 @@ class LotDetailViewModel @Inject constructor(
 
     private val _lotDetailState: MutableStateFlow<LotDetailState> =
         MutableStateFlow(LotDetailState())
-    val lotDetailState = _lotDetailState.asStateFlow()
+    val lotDetailState: StateFlow<LotDetailState> = _lotDetailState.asStateFlow()
 
     private val _bidState: MutableStateFlow<BidState> = MutableStateFlow(BidState())
-    val bidState = _bidState.asStateFlow()
+    val bidState: StateFlow<BidState> = _bidState.asStateFlow()
 
     private val lotId = savedStateHandle.get<Long>("lotId") ?: 0L
 
