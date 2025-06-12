@@ -1,6 +1,7 @@
 package com.example.auctionclient.presentation.lot_detail
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -247,27 +248,34 @@ fun Chip(
     onSelected: (BidAmount) -> Unit
 ) {
     val isSelected = selected == title.title
-    val background = if (isSelected) Purple40 else Color.LightGray
+    val background = if (isSelected) Purple40 else Color.White
     val contentColor = if (isSelected) Color.White else Color.Black
 
     Box(
         modifier = Modifier
             .padding(end = 10.dp)
             .height(35.dp)
+            .border(
+                width = 1.dp,
+                color = Color(0xFF6200EE),
+                shape = RoundedCornerShape(10.dp)
+            )
             .clip(RoundedCornerShape(10.dp))
             .background(background)
-            .clickable(
-                onClick = {
-                    onSelected(title)
-                }
-            )
+            .clickable {
+                onSelected(title)
+            }
     ) {
         Row(
-            modifier = Modifier.padding(start = 9.dp, end = 9.dp, top = 5.dp),
+            modifier = Modifier.padding(horizontal = 9.dp, vertical = 5.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Text(text = title.title, color = contentColor, fontSize = 16.sp)
+            Text(
+                text = title.title,
+                color = contentColor,
+                fontSize = 16.sp
+            )
         }
     }
 }

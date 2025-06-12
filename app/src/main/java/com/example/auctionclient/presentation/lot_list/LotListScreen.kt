@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.auctionclient.domain.Lot
 import com.example.auctionclient.ui.theme.Purple40
@@ -30,7 +30,7 @@ import com.example.auctionclient.ui.theme.Purple40
 fun LotListScreen(
     navController: NavHostController,
 ) {
-    val viewModel: LotListViewModel = viewModel()
+    val viewModel: LotListViewModel = hiltViewModel()
     val lots = viewModel.lots
 
     val gradient = Brush.verticalGradient(
@@ -119,7 +119,7 @@ fun LotView(
                 )
                 Text(
                     text = "${lot.endTime}",
-                    color = if (lot.endTime < 15f) Color.Red else Color.Black,
+                    color = if (lot.endTime < 15f) Purple40 else Color.Black,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.wrapContentWidth(Alignment.End)
                 )
