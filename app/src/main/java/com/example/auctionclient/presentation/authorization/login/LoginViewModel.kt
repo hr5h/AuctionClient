@@ -3,6 +3,7 @@ package com.example.auctionclient.presentation.authorization.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.auctionclient.data.repo.LoginRepository
+import com.example.auctionclient.data.sockets.StompClient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginRepository: LoginRepository
+    private val loginRepository: LoginRepository,
+    private val stompClient: StompClient
 ) : ViewModel() {
 
     private val _loginState: MutableStateFlow<LoginState> = MutableStateFlow(LoginState())
@@ -41,7 +43,9 @@ class LoginViewModel @Inject constructor(
                     }
                 }
 
-                println(tokenDef.await())
+                val token = tokenDef.await()
+                println(token)
+                stompClient.connect("http://10.0.2.2:8080/ws-auction", token)
                 _loginState.update { LoginState() }
                 callback(Result.success(Unit))
             }

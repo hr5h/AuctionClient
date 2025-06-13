@@ -1,0 +1,17 @@
+package com.example.auctionclient.data.services
+
+import com.example.auctionclient.data.entities.LotApi
+import com.google.gson.JsonArray
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.POST
+
+interface LotListService {
+
+    @GET("lots/")
+    suspend fun getLots(@Header("Authorization") token: String): JsonArray
+
+    @POST("lots/")
+    suspend fun createLot(@Header("Authorization") token: String, @Body lotApi: LotApi)
+}

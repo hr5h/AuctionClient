@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.auctionclient.data.sockets.StompClient
 import com.example.auctionclient.domain.Bid
 import com.example.auctionclient.domain.Lot
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +23,8 @@ import kotlin.random.Random
 @HiltViewModel
 class LotDetailViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val stompClient: StompClient
 ) : ViewModel() {
 
     private val _lotDetailState: MutableStateFlow<LotDetailState> =

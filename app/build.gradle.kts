@@ -64,7 +64,11 @@ dependencies {
     implementation(libs.com.squareup.okhttp3.okhttp2)
     implementation(libs.logging.interceptor)
     //StompSocket
-    //implementation(libs.spring.boot.starter.websocket)
+    implementation(libs.stompprotocolandroid)
+    //RxJava
+    implementation(libs.rxjava)
+    implementation(libs.rxandroid)
+    implementation(libs.adapter.rxjava2)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

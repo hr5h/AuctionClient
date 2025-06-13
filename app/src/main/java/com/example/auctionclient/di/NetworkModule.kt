@@ -1,6 +1,7 @@
 package com.example.auctionclient.di
 
 import com.example.auctionclient.data.services.LoginService
+import com.example.auctionclient.data.services.LotListService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,5 +36,10 @@ object NetworkModule {
         return retrofit.create(LoginService::class.java)
     }
 
-    val BASE_URL = "http://10.0.2.2:8080/api/auth/"
+    @Provides
+    fun provideLotListService(retrofit: Retrofit): LotListService {
+        return retrofit.create(LotListService::class.java)
+    }
+
+    val BASE_URL = "http://10.0.2.2:8080/api/"
 }

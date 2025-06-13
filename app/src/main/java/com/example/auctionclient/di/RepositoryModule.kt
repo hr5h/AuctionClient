@@ -2,6 +2,8 @@ package com.example.auctionclient.di
 
 import com.example.auctionclient.data.repo.LoginRepository
 import com.example.auctionclient.data.repo.LoginRepositoryImpl
+import com.example.auctionclient.data.repo.LotListRepository
+import com.example.auctionclient.data.repo.LotListRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -15,4 +17,9 @@ abstract class RepositoryModule {
     abstract fun bindLoginRepository(
         impl: LoginRepositoryImpl,
     ): LoginRepository
+
+    @Binds
+    abstract fun bindLotListRepository(
+        impl: LotListRepositoryImpl,
+    ): LotListRepository
 }

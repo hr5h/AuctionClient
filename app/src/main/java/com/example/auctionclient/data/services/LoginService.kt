@@ -7,9 +7,9 @@ import retrofit2.http.POST
 
 interface LoginService {
 
-    @POST("login")
+    @POST("auth/login")
     suspend fun login(@Body request: LoginRequest): LoginResponse
 
-    @POST("register")
+    @POST("auth/register")
     suspend fun register(@Body request: LoginRequest): LoginResponse
 }
