@@ -103,7 +103,7 @@ fun LoginScreen(
             )
             Button(
                 onClick = {
-                    viewModel.submitLogin { result ->
+                    viewModel.submitLogin(type) { result ->
                         result.onSuccess {
                             Toast.makeText(context, if(type == "login") "Вход выполнен" else "Регистрация успешна", Toast.LENGTH_SHORT).show()
                             navController.navigate("lot_list") {

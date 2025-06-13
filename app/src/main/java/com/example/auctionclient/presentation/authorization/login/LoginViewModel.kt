@@ -29,17 +29,23 @@ class LoginViewModel @Inject constructor(
         _loginState.update { it.copy(password = value) }
     }
 
-    fun submitLogin(callback: (Result<Unit>) -> Unit) {
+    fun submitLogin(type: String, callback: (Result<Unit>) -> Unit) {
         if (_loginState.value.login != "" &&
             _loginState.value.password != ""
         ) {
-            viewModelScope.launch(Dispatchers.IO) {
-                val token = async { loginRepository.login(_loginState.value.login, _loginState.value.password) }
+            viewModelScope.launch{
+                val token = async {
+                    if(type == "login") {
+                        loginRepository.login(_loginState.value.login, _loginState.value.password)
+                    } else {
+                        loginRepository.register(_loginState.value.login, _loginState.value.password)
+                    }
+                }
 
                 println(token.await())
+                _loginState.update { LoginState() }
+                callback(Result.success(Unit))
             }
-            _loginState.update { LoginState() }
-            callback(Result.success(Unit))
         } else {
             callback(Result.failure(Exception("Invalid login or password")))
         }

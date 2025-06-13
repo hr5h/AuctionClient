@@ -22,7 +22,6 @@ object NetworkModule {
 
         val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
 
-        val contentType = "application/json".toMediaType()
         return Retrofit
             .Builder()
             .client(client)
@@ -36,5 +35,5 @@ object NetworkModule {
         return retrofit.create(LoginService::class.java)
     }
 
-    val BASE_URL = "https://raw.githubusercontent.com/InternetEducation/"
+    val BASE_URL = "http://10.0.2.2:8080/api/auth/"
 }
