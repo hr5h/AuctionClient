@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.auctionclient.data.repo.LoginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,7 +33,7 @@ class LoginViewModel @Inject constructor(
             _loginState.value.password != ""
         ) {
             viewModelScope.launch{
-                val token = async {
+                val tokenDef = async {
                     if(type == "login") {
                         loginRepository.login(_loginState.value.login, _loginState.value.password)
                     } else {
@@ -42,7 +41,7 @@ class LoginViewModel @Inject constructor(
                     }
                 }
 
-                println(token.await())
+                println(tokenDef.await())
                 _loginState.update { LoginState() }
                 callback(Result.success(Unit))
             }
