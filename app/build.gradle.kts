@@ -53,6 +53,16 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+    //Retrofit
+    implementation(libs.com.squareup.retrofit2.retrofit2)
+    //GSON
+    implementation(libs.converter.gson)
+    //Coroutine
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.core)
+    //OkHttp
+    implementation(libs.com.squareup.okhttp3.okhttp2)
+    implementation(libs.logging.interceptor)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

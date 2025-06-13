@@ -34,6 +34,7 @@ import com.example.auctionclient.ui.theme.Purple40
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
     navController: NavHostController,
+    type: String,
 ) {
     val loginState = viewModel.loginState.collectAsState()
 
@@ -104,6 +105,7 @@ fun LoginScreen(
                 onClick = {
                     viewModel.submitLogin { result ->
                         result.onSuccess {
+                            Toast.makeText(context, if(type == "login") "Вход выполнен" else "Регистрация успешна", Toast.LENGTH_SHORT).show()
                             navController.navigate("lot_list") {
                                 popUpTo(navController.graph.startDestinationId) {
                                     inclusive = true
@@ -123,7 +125,7 @@ fun LoginScreen(
                 )
             ) {
                 Text(
-                    text = "Вход",
+                    text = if(type == "login") "Вход" else "Регистрация",
                     fontSize = 20.sp
                 )
             }
