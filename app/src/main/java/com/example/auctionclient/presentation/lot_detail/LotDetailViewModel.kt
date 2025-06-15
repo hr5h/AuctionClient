@@ -10,6 +10,7 @@ import com.example.auctionclient.data.sockets.StompClient
 import com.example.auctionclient.domain.Bid
 import com.example.auctionclient.domain.Lot
 import com.example.auctionclient.domain.Owner
+import com.example.auctionclient.presentation.lot_list.LotListViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import javax.inject.Inject
 import kotlin.math.roundToInt
 import kotlin.random.Random
@@ -25,7 +27,7 @@ import kotlin.random.Random
 class LotDetailViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     savedStateHandle: SavedStateHandle,
-    private val stompClient: StompClient
+    private val stompClient: StompClient,
 ) : ViewModel() {
 
     private val _lotDetailState: MutableStateFlow<LotDetailState> =
@@ -35,17 +37,18 @@ class LotDetailViewModel @Inject constructor(
     private val _bidState: MutableStateFlow<BidState> = MutableStateFlow(BidState())
     val bidState: StateFlow<BidState> = _bidState.asStateFlow()
 
-    private val lotId = savedStateHandle.get<Long>("lotId") ?: 0L
-
-    val lot = Lot(
-        id = lotId,
-        title = "Name$lotId",
-        description = "DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescription",
-        startPrice = 1000f,
-        currentPrice = 1500f,
-        status = "Open",
+    val lot = savedStateHandle.get<String>("lot")?.let {
+        println(it)
+        Json.decodeFromString<Lot>(it)
+    } ?: Lot(
+        id = 0,
+        title = "Not Found",
+        description = "Lot not found",
+        startPrice = 0f,
+        currentPrice = 0f,
+        status = "UNKNOWN",
         owner = Owner(0),
-        endTime = 10f
+        endTime = 0f
     )
 
     val bids = mutableStateListOf<Bid>()

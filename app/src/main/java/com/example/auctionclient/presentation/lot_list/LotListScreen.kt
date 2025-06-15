@@ -42,6 +42,8 @@ import coil.compose.AsyncImage
 import com.example.auctionclient.domain.Lot
 import com.example.auctionclient.presentation.lot_detail.LotDetailViewModel
 import com.example.auctionclient.ui.theme.Purple40
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 @Composable
 fun LotListScreen(
@@ -125,7 +127,8 @@ fun LotView(
             .fillMaxWidth()
             .padding(10.dp)
             .clickable {
-                navController.navigate("lot_detail/${lot.id}")
+                val jsonLot = Json.encodeToString(lot)
+                navController.navigate("lot_detail/${jsonLot}")
             }
     ) {
         Row(

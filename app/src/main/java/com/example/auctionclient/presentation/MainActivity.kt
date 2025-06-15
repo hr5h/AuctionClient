@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.auctionclient.domain.Lot
 import com.example.auctionclient.presentation.authorization.AuthorizationScreen
 import com.example.auctionclient.presentation.authorization.login.LoginScreen
 import com.example.auctionclient.presentation.lot_detail.LotDetailScreen
@@ -49,8 +50,8 @@ fun MyAppNavHost(navController: NavHostController) {
             LotListScreen(navController = navController)
         }
         composable(
-            route = "lot_detail/{lotId}",
-            arguments = listOf(navArgument("lotId") { type = NavType.LongType })
+            route = "lot_detail/{lot}",
+            arguments = listOf(navArgument("lot") { type = NavType.StringType })
             ) {
                 LotDetailScreen(navController = navController)
             }
