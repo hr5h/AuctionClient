@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.auctionclient.data.sockets.StompClient
 import com.example.auctionclient.domain.Bid
 import com.example.auctionclient.domain.Lot
+import com.example.auctionclient.domain.Owner
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,7 +44,7 @@ class LotDetailViewModel @Inject constructor(
         startPrice = 1000f,
         currentPrice = 1500f,
         status = "Open",
-        ownerId = 1,
+        owner = Owner(0),
         endTime = 10f
     )
 

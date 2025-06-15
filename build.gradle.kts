@@ -5,4 +5,6 @@ plugins {
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.hilt) apply false
+    kotlin("jvm") version "1.8.0"
+    kotlin("plugin.serialization") version "1.8.0" apply false
 }

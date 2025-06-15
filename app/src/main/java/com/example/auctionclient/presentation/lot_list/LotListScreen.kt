@@ -176,7 +176,7 @@ fun LotView(
                     )
                     Text(
                         text = "${lot.endTime}",
-                        color = if (lot.endTime < 15f) Purple40 else Color.Black,
+                        color = if ((lot.endTime ?: 0f) < 15f) Purple40 else Color.Black,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.wrapContentWidth(Alignment.End)
                     )

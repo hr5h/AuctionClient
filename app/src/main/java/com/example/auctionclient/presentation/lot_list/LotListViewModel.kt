@@ -2,18 +2,15 @@ package com.example.auctionclient.presentation.lot_list
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.auctionclient.data.repo.LotListRepository
 import com.example.auctionclient.data.sockets.StompClient
 import com.example.auctionclient.domain.Lot
-import com.example.auctionclient.presentation.lot_detail.BidState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -38,7 +35,7 @@ class LotListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            println(lotListRepository.getLots())
+            lots.addAll(lotListRepository.getLots())
         }
     }
 
@@ -71,9 +68,14 @@ class LotListViewModel @Inject constructor(
             _lotState.value.description != "" &&
             _lotState.value.imageUrl != "" &&
             _lotState.value.startPrice > 0f &&
-            _lotState.value.endTime > 0f) {
+            _lotState.value.endTime > 0f
+        ) {
             viewModelScope.launch {
-                lotListRepository.createLot(_lotState.value.title, _lotState.value.description, _lotState.value.startPrice)
+                lotListRepository.createLot(
+                    _lotState.value.title,
+                    _lotState.value.description,
+                    _lotState.value.startPrice
+                )
                 _lotState.update { LotState() }
                 showDialogLot(false)
                 launch(Dispatchers.Main) {
