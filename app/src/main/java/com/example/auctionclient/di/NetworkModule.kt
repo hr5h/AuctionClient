@@ -1,12 +1,12 @@
 package com.example.auctionclient.di
 
+import com.example.auctionclient.data.services.BidService
 import com.example.auctionclient.data.services.LoginService
 import com.example.auctionclient.data.services.LotListService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -39,6 +39,11 @@ object NetworkModule {
     @Provides
     fun provideLotListService(retrofit: Retrofit): LotListService {
         return retrofit.create(LotListService::class.java)
+    }
+
+    @Provides
+    fun provideBidService(retrofit: Retrofit): BidService {
+        return retrofit.create(BidService::class.java)
     }
 
     val BASE_URL = "http://10.0.2.2:8080/api/"

@@ -51,7 +51,7 @@ fun LotDetailScreen(
     navController: NavHostController,
 ) {
     val lot = viewModel.lot
-    val bids = viewModel.bids.filter { it.lotId == lot.id }
+    val bids = viewModel.bids.filter { it.lot.id == lot.id }
     val lotDetailState = viewModel.lotDetailState.collectAsState()
     val bidState = viewModel.bidState.collectAsState().value
 

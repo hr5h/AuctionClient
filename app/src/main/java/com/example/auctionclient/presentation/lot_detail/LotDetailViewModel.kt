@@ -6,13 +6,13 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.auctionclient.data.sockets.StompClient
+import com.example.auctionclient.data.repo.LotDetailRepository
 import com.example.auctionclient.domain.Bid
 import com.example.auctionclient.domain.Lot
 import com.example.auctionclient.domain.Owner
-import com.example.auctionclient.presentation.lot_list.LotListViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,13 +21,12 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 import kotlin.math.roundToInt
-import kotlin.random.Random
 
 @HiltViewModel
 class LotDetailViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     savedStateHandle: SavedStateHandle,
-    private val stompClient: StompClient,
+    private val lotDetailRepository: LotDetailRepository
 ) : ViewModel() {
 
     private val _lotDetailState: MutableStateFlow<LotDetailState> =
@@ -55,16 +54,7 @@ class LotDetailViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            repeat(10) { ind ->
-                bids.add(
-                    Bid(
-                        amount = 500,
-                        bidderId = ind.toLong(),
-                        lotId = Random.nextLong(1, 5),
-                        timeStamp = "10:23"
-                    )
-                )
-            }
+            bids.addAll(lotDetailRepository.getBids(lot.id))
         }
     }
 
@@ -90,11 +80,15 @@ class LotDetailViewModel @Inject constructor(
     }
 
     fun submitBid() {
-        //TODO Bid
         if (_bidState.value.amount != "") {
-            _bidState.update { BidState() }
-            showBid(false)
-            Toast.makeText(context, "Ставка принята", Toast.LENGTH_SHORT).show()
+            viewModelScope.launch {
+                lotDetailRepository.createBid(lot.id, _bidState.value.amount.toLong())
+                _bidState.update { BidState() }
+                showBid(false)
+                launch(Dispatchers.Main) {
+                    Toast.makeText(context, "Ставка принята", Toast.LENGTH_SHORT).show()
+                }
+            }
         } else {
             Toast.makeText(context, "Ставка не принята", Toast.LENGTH_SHORT).show()
         }
