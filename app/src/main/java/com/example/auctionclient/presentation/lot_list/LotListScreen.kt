@@ -208,12 +208,12 @@ fun LotView(
                         .align(Alignment.End)
                 ) {
                     Text(
-                        text = "Осталось времени:",
+                        text = "Время завершения:",
                         modifier = Modifier.weight(1f)
                     )
                     Text(
-                        text = "${lot.endTime}",
-                        color = if ((lot.endTime ?: 0f) < 15f) Purple40 else Color.Black,
+                        text = "${if(lot.endTime == "") "-" else lot.endTime}",
+                        color = Purple40,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.wrapContentWidth(Alignment.End)
                     )

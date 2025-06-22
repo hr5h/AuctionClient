@@ -37,6 +37,7 @@ class LotDetailViewModel @Inject constructor(
     val bidState: StateFlow<BidState> = _bidState.asStateFlow()
 
     private var isSubscribe: Boolean = false
+    val username = lotDetailRepository.getUserName()
 
     val lot: MutableStateFlow<Lot> = MutableStateFlow(
         savedStateHandle.get<String>("lot")?.let {
@@ -48,8 +49,8 @@ class LotDetailViewModel @Inject constructor(
             startPrice = 0f,
             currentPrice = 0f,
             status = "UNKNOWN",
-            owner = Owner(0),
-            endTime = 0f
+            owner = Owner(0, "null"),
+            endTime = ""
         )
     )
 
@@ -58,6 +59,9 @@ class LotDetailViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            if (!isSubscribe) {
+                subscribeLot()
+            }
             getBids()
         }
     }
@@ -103,9 +107,6 @@ class LotDetailViewModel @Inject constructor(
     fun submitBid() {
         if (_bidState.value.amount != "") {
             viewModelScope.launch {
-                if (!isSubscribe) {
-                    subscribeLot()
-                }
                 lotDetailRepository.createBid(lot.value.id, _bidState.value.amount.toLong())
                 _bidState.update { BidState() }
                 showBid(false)
@@ -118,7 +119,7 @@ class LotDetailViewModel @Inject constructor(
         }
     }
 
-    suspend fun getBids() {
+    private suspend fun getBids() {
         bids.clear()
         bids.addAll(lotDetailRepository.getBids(lot.value.id))
     }
@@ -135,4 +136,9 @@ class LotDetailViewModel @Inject constructor(
         }
     }
 
+    fun finalizeLot() {
+        viewModelScope.launch {
+            lotDetailRepository.finalizeLot(lot.value.id)
+        }
+    }
 }

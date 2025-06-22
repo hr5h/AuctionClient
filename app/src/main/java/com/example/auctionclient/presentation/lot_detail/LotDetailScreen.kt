@@ -125,7 +125,7 @@ fun LotDetailScreen(
                                 .align(Alignment.Start)
                         )
                         Text(
-                            text = "Осталось времени: ${lot.endTime}",
+                            text = "Время завершения: ${if(lot.endTime == "") "-" else lot.endTime}",
                             fontSize = 18.sp,
                             modifier = Modifier
                                 .padding(vertical = 4.dp)
@@ -144,21 +144,45 @@ fun LotDetailScreen(
                     BidView(bid)
                 }
             }
-            Button(
-                onClick = {
-                    viewModel.showBid(true)
-                },
-                modifier = Modifier
-                    .padding(10.dp),
-                colors = ButtonColors(
-                    contentColor = Color.White,
-                    containerColor = Purple40,
-                    disabledContainerColor = Purple40,
-                    disabledContentColor = Purple40
-                ),
-                shape = RoundedCornerShape(15.dp)
+            Box(
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "Сделать ставку")
+                Button(
+                    onClick = {
+                        viewModel.showBid(true)
+                    },
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(10.dp),
+                    colors = ButtonColors(
+                        contentColor = Color.White,
+                        containerColor = Purple40,
+                        disabledContainerColor = Purple40,
+                        disabledContentColor = Purple40
+                    ),
+                    shape = RoundedCornerShape(15.dp)
+                ) {
+                    Text(text = "Сделать ставку")
+                }
+                if(lot.owner.username == viewModel.username) {
+                    Button(
+                        onClick = {
+                            viewModel.finalizeLot()
+                        },
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .padding(10.dp),
+                        colors = ButtonColors(
+                            contentColor = Color.White,
+                            containerColor = Purple40,
+                            disabledContainerColor = Purple40,
+                            disabledContentColor = Purple40
+                        ),
+                        shape = RoundedCornerShape(15.dp)
+                    ) {
+                        Text(text = "Завершить")
+                    }
+                }
             }
             if (lotDetailState.value.showBid) {
                 BidBottomSheet(
@@ -188,7 +212,7 @@ fun BidView(bid: Bid) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(text = "Сумма: ${bid.amount}", color = Color.White)
-            Text(text = "Время: ${bid.timeStamp}", color = Color.White)
+            Text(text = "Время: ${bid.timestamp}", color = Color.White)
         }
     }
 }

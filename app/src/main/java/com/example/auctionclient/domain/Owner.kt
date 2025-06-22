@@ -4,5 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Owner(
-    val id: Long
+    val id: Long,
+    val username: String,
 )

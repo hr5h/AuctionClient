@@ -1,6 +1,7 @@
 package com.example.auctionclient.domain
 
 import kotlinx.serialization.Serializable
+import java.time.Instant
 
 @Serializable
 data class Lot(
@@ -11,5 +12,5 @@ data class Lot(
     val currentPrice: Float,
     val status: String = "Open",
     val owner: Owner,
-    val endTime: Float?,
+    val endTime: String?,
 )
