@@ -73,6 +73,8 @@ dependencies {
     //Serializable
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.kotlinx.serialization.json)
+    //SwipeRefresh
+    implementation(libs.accompanist.swiperefresh)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

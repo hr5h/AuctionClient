@@ -25,6 +25,10 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,8 +45,16 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.auctionclient.domain.Lot
 import com.example.auctionclient.ui.theme.Purple40
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlin.random.Random
 
 @Composable
 fun LotListScreen(
@@ -64,54 +76,76 @@ fun LotListScreen(
         modifier = Modifier
             .fillMaxSize()
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .background(gradient),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Аукцион",
-                modifier = Modifier.padding(15.dp),
-                color = Color.White,
-                fontSize = 26.sp,
-                fontWeight = FontWeight.Bold
-            )
-            LazyColumn(
-                modifier = Modifier.weight(1f)
-            ) {
-                items(lots) { lot ->
-                    LotView(lot, navController)
+        var isRefreshing by remember { mutableStateOf(false) }
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(isRefreshing),
+            onRefresh = {
+                isRefreshing = true
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(500)
+                    viewModel.getLots()
+                    isRefreshing = false
                 }
-            }
-            Button(
-                onClick = {
-                    viewModel.showDialogLot(true)
-                },
-                modifier = Modifier.padding(15.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Purple40,
-                    contentColor = Color.White
+            },
+            indicator = { state, trigger ->
+                SwipeRefreshIndicator(
+                    state = state,
+                    refreshTriggerDistance = trigger,
+                    scale = true,
+                    backgroundColor = Color.White,
+                    contentColor = Purple40
                 )
+            }
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .background(gradient),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Создать лот",
+                    text = "Аукцион",
+                    modifier = Modifier.padding(15.dp),
+                    color = Color.White,
+                    fontSize = 26.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                LazyColumn(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    items(lots) { lot ->
+                        LotView(lot, navController)
+                    }
+                }
+                Button(
+                    onClick = {
+                        viewModel.showDialogLot(true)
+                    },
+                    modifier = Modifier.padding(15.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Purple40,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(
+                        text = "Создать лот",
+                    )
+                }
+            }
+            if (lotListState.value.showDialogLot) {
+                DialogLot(
+                    onDismiss = { viewModel.showDialogLot(false) },
+                    submitLot = viewModel::submitLot,
+                    lotState = lotState,
+                    changeTitle = viewModel::changeTitle,
+                    changeDesciption = viewModel::changeDescription,
+                    changeImageUrl = viewModel::changeImageUrl,
+                    changeStartPrice = viewModel::changeStartPrice,
+                    changeEndTime = viewModel::changeEndTime,
                 )
             }
-        }
-        if (lotListState.value.showDialogLot) {
-            DialogLot(
-                onDismiss = { viewModel.showDialogLot(false) },
-                submitLot = viewModel::submitLot,
-                lotState = lotState,
-                changeTitle = viewModel::changeTitle,
-                changeDesciption = viewModel::changeDescription,
-                changeImageUrl = viewModel::changeImageUrl,
-                changeStartPrice = viewModel::changeStartPrice,
-                changeEndTime = viewModel::changeEndTime,
-            )
         }
     }
 }

@@ -1,4 +1,5 @@
 [versions]
+accompanistSwiperefresh = "0.27.0"
 adapterRxjava2 = "2.5.0"
 agp = "8.8.0"
 coil = "3.0.4"
@@ -28,6 +29,7 @@ rxjava = "2.2.5"
 stompprotocolandroid = "1.6.6"
 
 [libraries]
+accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "accompanistSwiperefresh" }
 adapter-rxjava2 = { module = "com.squareup.retrofit2:adapter-rxjava2", version.ref = "adapterRxjava2" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
