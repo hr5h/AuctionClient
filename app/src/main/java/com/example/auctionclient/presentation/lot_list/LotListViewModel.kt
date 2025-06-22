@@ -35,7 +35,7 @@ class LotListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            lots.addAll(lotListRepository.getLots())
+            getLots()
         }
     }
 
@@ -85,5 +85,10 @@ class LotListViewModel @Inject constructor(
         } else {
             Toast.makeText(context, "Лот не добавлен", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    suspend fun getLots() {
+        lots.clear()
+        lots.addAll(lotListRepository.getLots())
     }
 }

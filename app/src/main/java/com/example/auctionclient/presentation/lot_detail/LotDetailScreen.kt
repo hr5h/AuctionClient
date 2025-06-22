@@ -20,7 +20,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -50,7 +49,7 @@ fun LotDetailScreen(
     viewModel: LotDetailViewModel = hiltViewModel(),
     navController: NavHostController,
 ) {
-    val lot = viewModel.lot
+    val lot = viewModel.lot.collectAsState().value
     val bids = viewModel.bids.filter { it.lot.id == lot.id }
     val lotDetailState = viewModel.lotDetailState.collectAsState()
     val bidState = viewModel.bidState.collectAsState().value

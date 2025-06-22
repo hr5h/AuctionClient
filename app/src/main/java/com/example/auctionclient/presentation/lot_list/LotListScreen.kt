@@ -40,7 +40,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.auctionclient.domain.Lot
-import com.example.auctionclient.presentation.lot_detail.LotDetailViewModel
 import com.example.auctionclient.ui.theme.Purple40
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -143,6 +142,7 @@ fun LotView(
                     .size(120.dp)
                     .padding(6.dp)
                     .clip(RoundedCornerShape(15.dp))
+                    .background(Color.LightGray)
             )
             Column(
                 modifier = Modifier
@@ -220,8 +220,18 @@ fun DialogLot(
                 LotDialogTextField("Название:", lotState.value.title, changeTitle, false)
                 LotDialogTextField("Описание:", lotState.value.description, changeDesciption, false)
                 LotDialogTextField("Изображение:", lotState.value.imageUrl, changeImageUrl, false)
-                LotDialogTextField("Стартовая цена:", lotState.value.startPrice.toString(), changeStartPrice, true)
-                LotDialogTextField("Время лота:", lotState.value.endTime.toString(), changeEndTime, true)
+                LotDialogTextField(
+                    "Стартовая цена:",
+                    lotState.value.startPrice.toString(),
+                    changeStartPrice,
+                    true
+                )
+                LotDialogTextField(
+                    "Время лота:",
+                    lotState.value.endTime.toString(),
+                    changeEndTime,
+                    true
+                )
                 Button(
                     onClick = {
                         submitLot()

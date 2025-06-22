@@ -36,25 +36,29 @@ class LotDetailViewModel @Inject constructor(
     private val _bidState: MutableStateFlow<BidState> = MutableStateFlow(BidState())
     val bidState: StateFlow<BidState> = _bidState.asStateFlow()
 
-    val lot = savedStateHandle.get<String>("lot")?.let {
-        println(it)
-        Json.decodeFromString<Lot>(it)
-    } ?: Lot(
-        id = 0,
-        title = "Not Found",
-        description = "Lot not found",
-        startPrice = 0f,
-        currentPrice = 0f,
-        status = "UNKNOWN",
-        owner = Owner(0),
-        endTime = 0f
+    private var isSubscribe: Boolean = false
+
+    val lot: MutableStateFlow<Lot> = MutableStateFlow(
+        savedStateHandle.get<String>("lot")?.let {
+            Json.decodeFromString<Lot>(it)
+        } ?: Lot(
+            id = 0,
+            title = "Not Found",
+            description = "Lot not found",
+            startPrice = 0f,
+            currentPrice = 0f,
+            status = "UNKNOWN",
+            owner = Owner(0),
+            endTime = 0f
+        )
     )
+
 
     val bids = mutableStateListOf<Bid>()
 
     init {
         viewModelScope.launch {
-            bids.addAll(lotDetailRepository.getBids(lot.id))
+            getBids()
         }
     }
 
@@ -69,20 +73,40 @@ class LotDetailViewModel @Inject constructor(
     fun changeSelected(value: BidAmount) {
         _bidState.update { it.copy(selected = value) }
         when (value) {
-            BidAmount.Min -> changeAmountBid((lot.currentPrice + 10).roundToInt().toString())
-            BidAmount.Amount10 -> changeAmountBid((lot.currentPrice * 1.1).roundToInt().toString())
-            BidAmount.Amount20 -> changeAmountBid((lot.currentPrice * 1.2).roundToInt().toString())
-            BidAmount.Amount30 -> changeAmountBid((lot.currentPrice * 1.3).roundToInt().toString())
-            BidAmount.Amount40 -> changeAmountBid((lot.currentPrice * 1.4).roundToInt().toString())
-            BidAmount.Amount50 -> changeAmountBid((lot.currentPrice * 1.5).roundToInt().toString())
-            BidAmount.Amount100 -> changeAmountBid((lot.currentPrice * 2).roundToInt().toString())
+            BidAmount.Min -> changeAmountBid((lot.value.currentPrice + 10).roundToInt().toString())
+            BidAmount.Amount10 -> changeAmountBid(
+                (lot.value.currentPrice * 1.1).roundToInt().toString()
+            )
+
+            BidAmount.Amount20 -> changeAmountBid(
+                (lot.value.currentPrice * 1.2).roundToInt().toString()
+            )
+
+            BidAmount.Amount30 -> changeAmountBid(
+                (lot.value.currentPrice * 1.3).roundToInt().toString()
+            )
+
+            BidAmount.Amount40 -> changeAmountBid(
+                (lot.value.currentPrice * 1.4).roundToInt().toString()
+            )
+
+            BidAmount.Amount50 -> changeAmountBid(
+                (lot.value.currentPrice * 1.5).roundToInt().toString()
+            )
+
+            BidAmount.Amount100 -> changeAmountBid(
+                (lot.value.currentPrice * 2).roundToInt().toString()
+            )
         }
     }
 
     fun submitBid() {
         if (_bidState.value.amount != "") {
             viewModelScope.launch {
-                lotDetailRepository.createBid(lot.id, _bidState.value.amount.toLong())
+                if (!isSubscribe) {
+                    subscribeLot()
+                }
+                lotDetailRepository.createBid(lot.value.id, _bidState.value.amount.toLong())
                 _bidState.update { BidState() }
                 showBid(false)
                 launch(Dispatchers.Main) {
@@ -93,4 +117,22 @@ class LotDetailViewModel @Inject constructor(
             Toast.makeText(context, "Ставка не принята", Toast.LENGTH_SHORT).show()
         }
     }
+
+    suspend fun getBids() {
+        bids.clear()
+        bids.addAll(lotDetailRepository.getBids(lot.value.id))
+    }
+
+    private suspend fun subscribeLot() {
+        isSubscribe = true
+        lotDetailRepository.subscribeLot(lot.value.id) { newLot ->
+            lot.update {
+                viewModelScope.launch {
+                    getBids()
+                }
+                newLot
+            }
+        }
+    }
+
 }

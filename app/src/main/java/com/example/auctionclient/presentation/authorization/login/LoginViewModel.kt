@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+const val URL_SERVER = "http://10.0.2.2:8080/ws-auction"
+
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginRepository: LoginRepository,
@@ -44,8 +46,8 @@ class LoginViewModel @Inject constructor(
                 }
 
                 val token = tokenDef.await()
-                println(token)
-                stompClient.connect("http://10.0.2.2:8080/ws-auction", token)
+                //println(token)
+                stompClient.connect(URL_SERVER, token)
                 _loginState.update { LoginState() }
                 callback(Result.success(Unit))
             }
