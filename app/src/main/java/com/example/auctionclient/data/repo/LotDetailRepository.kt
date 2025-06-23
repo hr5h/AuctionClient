@@ -22,6 +22,7 @@ interface LotDetailRepository {
     suspend fun createBid(lotId: Long, amount: Long)
     suspend fun subscribeLot(lotId: Long, callback: (Lot) -> Unit)
     suspend fun finalizeLot(lotId: Long)
+    suspend fun closeLot(lotId: Long)
     fun getUserName(): String
 }
 
@@ -64,6 +65,10 @@ class LotDetailRepositoryImpl @Inject constructor(
 
     override suspend fun finalizeLot(lotId: Long) {
         bidService.finalizeLot(lotId, "Bearer ${stompClient.token}")
+    }
+
+    override suspend fun closeLot(lotId: Long) {
+        bidService.closeLot(lotId, "Bearer ${stompClient.token}")
     }
 
     override fun getUserName(): String {

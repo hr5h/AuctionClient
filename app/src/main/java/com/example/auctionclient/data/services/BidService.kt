@@ -19,4 +19,10 @@ interface BidService {
         @Path("lotId") lotId: Long,
         @Header("Authorization") token: String
     )
+
+    @POST("lots/{lotId}/close")
+    suspend fun closeLot(
+        @Path("lotId") lotId: Long,
+        @Header("Authorization") token: String
+    )
 }

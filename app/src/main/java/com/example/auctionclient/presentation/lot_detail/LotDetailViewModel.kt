@@ -141,4 +141,10 @@ class LotDetailViewModel @Inject constructor(
             lotDetailRepository.finalizeLot(lot.value.id)
         }
     }
+
+    fun closeLot() {
+        viewModelScope.launch {
+            lotDetailRepository.closeLot(lot.value.id)
+        }
+    }
 }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -125,7 +126,7 @@ fun LotDetailScreen(
                                 .align(Alignment.Start)
                         )
                         Text(
-                            text = "Время завершения: ${if(lot.endTime == "") "-" else lot.endTime}",
+                            text = "Время завершения: ${if (lot.endTime == "") "-" else lot.endTime}",
                             fontSize = 18.sp,
                             modifier = Modifier
                                 .padding(vertical = 4.dp)
@@ -147,31 +148,14 @@ fun LotDetailScreen(
             Box(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Button(
-                    onClick = {
-                        viewModel.showBid(true)
-                    },
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .padding(10.dp),
-                    colors = ButtonColors(
-                        contentColor = Color.White,
-                        containerColor = Purple40,
-                        disabledContainerColor = Purple40,
-                        disabledContentColor = Purple40
-                    ),
-                    shape = RoundedCornerShape(15.dp)
-                ) {
-                    Text(text = "Сделать ставку")
-                }
-                if(lot.owner.username == viewModel.username && lot.status == "OPEN") {
+                if(lot.status == "OPEN") {
                     Button(
                         onClick = {
-                            viewModel.finalizeLot()
+                            viewModel.showBid(true)
                         },
                         modifier = Modifier
-                            .align(Alignment.CenterEnd)
-                            .padding(10.dp),
+                            .align(Alignment.BottomCenter)
+                            .padding(bottom = 13.5.dp),
                         colors = ButtonColors(
                             contentColor = Color.White,
                             containerColor = Purple40,
@@ -180,7 +164,69 @@ fun LotDetailScreen(
                         ),
                         shape = RoundedCornerShape(15.dp)
                     ) {
-                        Text(text = "Завершить")
+                        Text(text = "Сделать ставку", modifier = Modifier.padding(top = 5.dp, bottom = 5.dp))
+                    }
+                }
+                if (lot.owner.username == viewModel.username && lot.status == "OPEN") {
+                    Column(
+                        modifier = Modifier.align(Alignment.CenterEnd).padding(bottom = 10.dp),
+                    ) {
+                        Button(
+                            onClick = {
+                                viewModel.finalizeLot()
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth(0.33f)
+                                .padding(5.dp)
+                                .border(
+                                    width = 1.dp,
+                                    color = Purple40,
+                                    shape = RoundedCornerShape(15.dp)
+                                ),
+                            colors = ButtonColors(
+                                contentColor = Color.White,
+                                containerColor = Color.White,
+                                disabledContainerColor = Purple40,
+                                disabledContentColor = Purple40
+                            ),
+                            shape = RoundedCornerShape(15.dp),
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Text(
+                                text = "Начать завершение",
+                                color = Purple40,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                fontSize = 12.sp
+                            )
+                        }
+                        Button(
+                            onClick = {
+                                viewModel.closeLot()
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth(0.33f)
+                                .padding(5.dp)
+                                .border(
+                                    width = 1.dp,
+                                    color = Purple40,
+                                    shape = RoundedCornerShape(15.dp)
+                                ),
+                            colors = ButtonColors(
+                                contentColor = Color.White,
+                                containerColor = Color.White,
+                                disabledContainerColor = Purple40,
+                                disabledContentColor = Purple40
+                            ),
+                            shape = RoundedCornerShape(15.dp),
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Text(
+                                text = "Завершить сейчас",
+                                color = Purple40,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                fontSize = 12.sp
+                            )
+                        }
                     }
                 }
             }
@@ -320,7 +366,7 @@ fun Chip(
 ) {
     val isSelected = selected == title.title
     val background = if (isSelected) Purple40 else Color.White
-    val contentColor = if (isSelected) Color.White else Color.Black
+    val contentColor = if (isSelected) Color.White else Purple40
 
     Box(
         modifier = Modifier
@@ -345,7 +391,7 @@ fun Chip(
             Text(
                 text = title.title,
                 color = contentColor,
-                fontSize = 16.sp
+                fontSize = 16.sp,
             )
         }
     }
