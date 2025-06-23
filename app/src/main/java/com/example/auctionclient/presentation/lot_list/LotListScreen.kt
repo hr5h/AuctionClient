@@ -2,11 +2,14 @@ package com.example.auctionclient.presentation.lot_list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -54,7 +57,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlin.random.Random
 
 @Composable
 fun LotListScreen(
@@ -62,7 +64,7 @@ fun LotListScreen(
     navController: NavHostController,
 ) {
     val lots = viewModel.lots
-    val lotListState = viewModel.lotListState.collectAsState()
+    val lotListState = viewModel.lotListState.collectAsState().value
     val lotState = viewModel.lotState.collectAsState()
 
     val gradient = Brush.verticalGradient(
@@ -111,6 +113,12 @@ fun LotListScreen(
                     fontSize = 26.sp,
                     fontWeight = FontWeight.Bold
                 )
+                val lotList = listOf("Все лоты", "Выигранные лоты")
+                ChipGroupCompose(
+                    chipList = lotList,
+                    selected = lotListState.selectedList,
+                    changeSelected = viewModel::changeLotList
+                )
                 LazyColumn(
                     modifier = Modifier.weight(1f)
                 ) {
@@ -134,13 +142,13 @@ fun LotListScreen(
                     )
                 }
             }
-            if (lotListState.value.showDialogLot) {
+            if (lotListState.showDialogLot) {
                 DialogLot(
                     onDismiss = { viewModel.showDialogLot(false) },
                     submitLot = viewModel::submitLot,
                     lotState = lotState,
                     changeTitle = viewModel::changeTitle,
-                    changeDesciption = viewModel::changeDescription,
+                    changeDescription = viewModel::changeDescription,
                     changeImageUrl = viewModel::changeImageUrl,
                     changeStartPrice = viewModel::changeStartPrice,
                     changeEndTime = viewModel::changeEndTime,
@@ -183,12 +191,25 @@ fun LotView(
                     .fillMaxSize()
                     .padding(6.dp),
             ) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.End),
-                    text = lot.title,
-                )
+                Row {
+                    Text(
+                        modifier = Modifier.weight((1f)),
+                        text = lot.title,
+                    )
+                    Box(
+                        modifier = Modifier
+                            .size(10.dp)
+                            .clip(
+                                RoundedCornerShape(20.dp)
+                            )
+                            .background(when(lot.status) {
+                                "OPEN" -> Color.Green
+                                "CLOSING" -> Color.Yellow
+                                "SOLD" -> Color.Red
+                                else -> Color.White
+                            })
+                    )
+                }
                 Row(
                     Modifier
                         .align(Alignment.End)
@@ -212,7 +233,7 @@ fun LotView(
                         modifier = Modifier.weight(1f)
                     )
                     Text(
-                        text = "${if(lot.endTime == "") "-" else lot.endTime}",
+                        text = "${if (lot.endTime == "") "-" else lot.endTime}",
                         color = Purple40,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.wrapContentWidth(Alignment.End)
@@ -230,7 +251,7 @@ fun DialogLot(
     submitLot: () -> Unit,
     lotState: State<LotState>,
     changeTitle: (String) -> Unit,
-    changeDesciption: (String) -> Unit,
+    changeDescription: (String) -> Unit,
     changeImageUrl: (String) -> Unit,
     changeStartPrice: (String) -> Unit,
     changeEndTime: (String) -> Unit,
@@ -252,7 +273,12 @@ fun DialogLot(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 LotDialogTextField("Название:", lotState.value.title, changeTitle, false)
-                LotDialogTextField("Описание:", lotState.value.description, changeDesciption, false)
+                LotDialogTextField(
+                    "Описание:",
+                    lotState.value.description,
+                    changeDescription,
+                    false
+                )
                 LotDialogTextField("Изображение:", lotState.value.imageUrl, changeImageUrl, false)
                 LotDialogTextField(
                     "Стартовая цена:",
@@ -319,4 +345,64 @@ fun LotDialogTextField(
             Text(text = label)
         }
     )
+}
+
+@Composable
+fun ChipGroupCompose(
+    chipList: List<String>,
+    selected: String,
+    changeSelected: (String) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .padding(start = 10.dp, top = 15.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        chipList.forEach { it ->
+            Chip(
+                title = it,
+                selected = selected,
+                onSelected = {
+                    changeSelected(it)
+                },
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
+
+@Composable
+fun Chip(
+    title: String,
+    selected: String,
+    onSelected: (String) -> Unit,
+    modifier: Modifier
+) {
+    val isSelected = selected == title
+    val background = if (isSelected) Purple40 else Color.White
+    val contentColor = if (isSelected) Color.White else Color.Black
+
+    Box(
+        modifier = modifier
+            .padding(end = 10.dp)
+            .height(35.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .background(background)
+            .clickable {
+                onSelected(title)
+            }
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 9.dp, vertical = 5.dp).fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = title,
+                color = contentColor,
+                fontSize = 16.sp
+            )
+        }
+    }
 }

@@ -164,7 +164,7 @@ fun LotDetailScreen(
                 ) {
                     Text(text = "Сделать ставку")
                 }
-                if(lot.owner.username == viewModel.username) {
+                if(lot.owner.username == viewModel.username && lot.status == "OPEN") {
                     Button(
                         onClick = {
                             viewModel.finalizeLot()

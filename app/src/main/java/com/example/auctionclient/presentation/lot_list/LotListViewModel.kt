@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.auctionclient.data.repo.LotListRepository
-import com.example.auctionclient.data.sockets.StompClient
 import com.example.auctionclient.domain.Lot
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -21,7 +20,6 @@ import javax.inject.Inject
 @HiltViewModel
 class LotListViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val stompClient: StompClient,
     private val lotListRepository: LotListRepository
 ) : ViewModel() {
 
@@ -63,6 +61,22 @@ class LotListViewModel @Inject constructor(
         _lotState.update { it.copy(endTime = value.toFloat()) }
     }
 
+    fun changeLotList(value: String) {
+        _lotListState.update { it.copy(selectedList = value) }
+        when(value) {
+            "Все лоты" -> {
+                viewModelScope.launch {
+                    getLots()
+                }
+            }
+            "Выигранные лоты" -> {
+                viewModelScope.launch {
+                    getWinningLots()
+                }
+            }
+        }
+    }
+
     fun submitLot() {
         if (_lotState.value.title != "" &&
             _lotState.value.description != "" &&
@@ -90,5 +104,10 @@ class LotListViewModel @Inject constructor(
     suspend fun getLots() {
         lots.clear()
         lots.addAll(lotListRepository.getLots())
+    }
+
+    private suspend fun getWinningLots() {
+        lots.clear()
+        lots.addAll(lotListRepository.getWinningLots())
     }
 }

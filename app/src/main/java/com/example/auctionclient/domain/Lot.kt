@@ -1,7 +1,6 @@
 package com.example.auctionclient.domain
 
 import kotlinx.serialization.Serializable
-import java.time.Instant
 
 @Serializable
 data class Lot(
