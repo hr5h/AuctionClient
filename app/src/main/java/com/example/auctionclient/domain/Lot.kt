@@ -10,6 +10,7 @@ data class Lot(
     val startPrice: Float,
     val currentPrice: Float,
     val status: String = "Open",
-    val owner: Owner,
+    val owner: User,
+    val winner: User?,
     val endTime: String?,
 )

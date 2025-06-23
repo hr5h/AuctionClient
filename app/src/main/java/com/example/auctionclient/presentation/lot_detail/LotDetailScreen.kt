@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -96,8 +97,21 @@ fun LotDetailScreen(
                             model = "https://masterpiecer-images.s3.yandex.net/5fab5867404521d:upscaled",
                             contentDescription = "imageLot",
                             modifier = Modifier
-                                .size(150.dp)
+                                .size(100.dp)
                                 .clip(RoundedCornerShape(15.dp))
+                        )
+                        Box(
+                            modifier = Modifier
+                                .size(10.dp)
+                                .clip(
+                                    RoundedCornerShape(20.dp)
+                                )
+                                .background(when(lot.status) {
+                                    "OPEN" -> Color.Green
+                                    "CLOSING" -> Color.Yellow
+                                    "SOLD" -> Color.Red
+                                    else -> Color.White
+                                })
                         )
                     }
                     Text(
@@ -132,6 +146,21 @@ fun LotDetailScreen(
                                 .padding(vertical = 4.dp)
                                 .align(Alignment.Start)
                         )
+                        Row(
+                            Modifier
+                                .align(Alignment.Start)
+                        ) {
+                            Text(
+                                text = "Победитель: ",
+                                fontSize = 18.sp,
+                            )
+                            Text(
+                                text = lot.winner?.username ?: "-",
+                                color = Purple40,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 18.sp,
+                            )
+                        }
                     }
                 }
             }

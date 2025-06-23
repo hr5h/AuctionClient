@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.auctionclient.data.repo.LotDetailRepository
 import com.example.auctionclient.domain.Bid
 import com.example.auctionclient.domain.Lot
-import com.example.auctionclient.domain.Owner
+import com.example.auctionclient.domain.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -49,7 +49,8 @@ class LotDetailViewModel @Inject constructor(
             startPrice = 0f,
             currentPrice = 0f,
             status = "UNKNOWN",
-            owner = Owner(0, "null"),
+            owner = User(0, "null"),
+            winner = null,
             endTime = ""
         )
     )
