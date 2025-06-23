@@ -104,7 +104,7 @@ class LotListViewModel @Inject constructor(
 
     suspend fun getLots() {
         lots.clear()
-        lots.addAll(lotListRepository.getLots().reversed())
+        lots.addAll(lotListRepository.getLots())
     }
 
     private suspend fun getWinningLots() {
