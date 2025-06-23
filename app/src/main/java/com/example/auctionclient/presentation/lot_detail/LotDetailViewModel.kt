@@ -7,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.auctionclient.data.repo.LotDetailRepository
+import com.example.auctionclient.data.repo.LotListRepository
 import com.example.auctionclient.domain.Bid
 import com.example.auctionclient.domain.Lot
 import com.example.auctionclient.domain.User
@@ -26,7 +27,8 @@ import kotlin.math.roundToInt
 class LotDetailViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     savedStateHandle: SavedStateHandle,
-    private val lotDetailRepository: LotDetailRepository
+    private val lotDetailRepository: LotDetailRepository,
+    private val lotListRepository: LotListRepository
 ) : ViewModel() {
 
     private val _lotDetailState: MutableStateFlow<LotDetailState> =
@@ -39,13 +41,14 @@ class LotDetailViewModel @Inject constructor(
     private var isSubscribe: Boolean = false
     val username = lotDetailRepository.getUserName()
 
+    private val lotId = savedStateHandle.get<Long>("lotId") ?: 0
+
     val lot: MutableStateFlow<Lot> = MutableStateFlow(
-        savedStateHandle.get<String>("lot")?.let {
-            Json.decodeFromString<Lot>(it)
-        } ?: Lot(
+        Lot(
             id = 0,
             title = "Not Found",
             description = "Lot not found",
+            imageUrl = "",
             startPrice = 0f,
             currentPrice = 0f,
             status = "UNKNOWN",
@@ -55,11 +58,11 @@ class LotDetailViewModel @Inject constructor(
         )
     )
 
-
     val bids = mutableStateListOf<Bid>()
 
     init {
         viewModelScope.launch {
+            lot.update { lotListRepository.getLots().first { it.id == lotId } }
             if (!isSubscribe) {
                 subscribeLot()
             }
@@ -108,7 +111,7 @@ class LotDetailViewModel @Inject constructor(
     fun submitBid() {
         if (_bidState.value.amount != "") {
             viewModelScope.launch {
-                lotDetailRepository.createBid(lot.value.id, _bidState.value.amount.toLong())
+                lotDetailRepository.createBid(lotId, _bidState.value.amount.toLong())
                 _bidState.update { BidState() }
                 showBid(false)
                 launch(Dispatchers.Main) {
@@ -122,16 +125,18 @@ class LotDetailViewModel @Inject constructor(
 
     private suspend fun getBids() {
         bids.clear()
-        bids.addAll(lotDetailRepository.getBids(lot.value.id))
+        bids.addAll(lotDetailRepository.getBids(lotId))
     }
 
     private suspend fun subscribeLot() {
         isSubscribe = true
-        lotDetailRepository.subscribeLot(lot.value.id) { newLot ->
+        lotDetailRepository.subscribeLot(lotId) { newLot ->
+            println(newLot)
             lot.update {
                 viewModelScope.launch {
                     getBids()
                 }
+                println(newLot)
                 newLot
             }
         }
@@ -139,13 +144,13 @@ class LotDetailViewModel @Inject constructor(
 
     fun finalizeLot() {
         viewModelScope.launch {
-            lotDetailRepository.finalizeLot(lot.value.id)
+            lotDetailRepository.finalizeLot(lotId)
         }
     }
 
     fun closeLot() {
         viewModelScope.launch {
-            lotDetailRepository.closeLot(lot.value.id)
+            lotDetailRepository.closeLot(lotId)
         }
     }
 }

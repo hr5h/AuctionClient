@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -52,7 +53,7 @@ fun LotDetailScreen(
     navController: NavHostController,
 ) {
     val lot = viewModel.lot.collectAsState().value
-    val bids = viewModel.bids.filter { it.lot.id == lot.id }
+    val bids = viewModel.bids
     val lotDetailState = viewModel.lotDetailState.collectAsState()
     val bidState = viewModel.bidState.collectAsState().value
 
@@ -94,11 +95,12 @@ fun LotDetailScreen(
                             fontWeight = FontWeight.Bold
                         )
                         AsyncImage(
-                            model = "https://masterpiecer-images.s3.yandex.net/5fab5867404521d:upscaled",
+                            model = lot.imageUrl ?: "https://masterpiecer-images.s3.yandex.net/5fab5867404521d:upscaled",
                             contentDescription = "imageLot",
                             modifier = Modifier
                                 .size(100.dp)
-                                .clip(RoundedCornerShape(15.dp))
+                                .clip(RoundedCornerShape(15.dp)),
+                            contentScale = ContentScale.Crop
                         )
                         Box(
                             modifier = Modifier
@@ -196,65 +198,71 @@ fun LotDetailScreen(
                         Text(text = "Сделать ставку", modifier = Modifier.padding(top = 5.dp, bottom = 5.dp))
                     }
                 }
-                if (lot.owner.username == viewModel.username && lot.status == "OPEN") {
+                if (lot.owner.username == viewModel.username && lot.status != "SOLD") {
                     Column(
                         modifier = Modifier.align(Alignment.CenterEnd).padding(bottom = 10.dp),
                     ) {
-                        Button(
-                            onClick = {
-                                viewModel.finalizeLot()
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth(0.33f)
-                                .padding(5.dp)
-                                .border(
-                                    width = 1.dp,
-                                    color = Purple40,
-                                    shape = RoundedCornerShape(15.dp)
-                                ),
-                            colors = ButtonColors(
-                                contentColor = Color.White,
-                                containerColor = Color.White,
-                                disabledContainerColor = Purple40,
-                                disabledContentColor = Purple40
-                            ),
-                            shape = RoundedCornerShape(15.dp),
-                            contentPadding = PaddingValues(0.dp)
-                        ) {
-                            Text(
-                                text = "Начать завершение",
-                                color = Purple40,
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                                fontSize = 12.sp
-                            )
-                        }
-                        Button(
-                            onClick = {
-                                viewModel.closeLot()
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth(0.33f)
-                                .padding(5.dp)
-                                .border(
-                                    width = 1.dp,
-                                    color = Purple40,
-                                    shape = RoundedCornerShape(15.dp)
-                                ),
-                            colors = ButtonColors(
-                                contentColor = Color.White,
-                                containerColor = Color.White,
-                                disabledContainerColor = Purple40,
-                                disabledContentColor = Purple40
-                            ),
-                            shape = RoundedCornerShape(15.dp),
-                            contentPadding = PaddingValues(0.dp)
-                        ) {
-                            Text(
-                                text = "Завершить сейчас",
-                                color = Purple40,
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                                fontSize = 12.sp
-                            )
+                        when(lot.status) {
+                            "OPEN" -> {
+                                Button(
+                                    onClick = {
+                                        viewModel.finalizeLot()
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.33f)
+                                        .padding(5.dp)
+                                        .border(
+                                            width = 1.dp,
+                                            color = Purple40,
+                                            shape = RoundedCornerShape(15.dp)
+                                        ),
+                                    colors = ButtonColors(
+                                        contentColor = Color.White,
+                                        containerColor = Color.White,
+                                        disabledContainerColor = Purple40,
+                                        disabledContentColor = Purple40
+                                    ),
+                                    shape = RoundedCornerShape(15.dp),
+                                    contentPadding = PaddingValues(0.dp)
+                                ) {
+                                    Text(
+                                        text = "Начать завершение",
+                                        color = Purple40,
+                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                        fontSize = 12.sp
+                                    )
+                                }
+                            }
+                            "CLOSING" -> {
+                                Button(
+                                    onClick = {
+                                        viewModel.closeLot()
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.33f)
+                                        .padding(5.dp)
+                                        .border(
+                                            width = 1.dp,
+                                            color = Purple40,
+                                            shape = RoundedCornerShape(15.dp)
+                                        ),
+                                    colors = ButtonColors(
+                                        contentColor = Color.White,
+                                        containerColor = Color.White,
+                                        disabledContainerColor = Purple40,
+                                        disabledContentColor = Purple40
+                                    ),
+                                    shape = RoundedCornerShape(15.dp),
+                                    contentPadding = PaddingValues(0.dp)
+                                ) {
+                                    Text(
+                                        text = "Завершить сейчас",
+                                        color = Purple40,
+                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                        fontSize = 12.sp
+                                    )
+                                }
+                            }
                         }
                     }
                 }

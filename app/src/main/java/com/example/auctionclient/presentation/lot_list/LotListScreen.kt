@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -119,6 +121,7 @@ fun LotListScreen(
                     selected = lotListState.selectedList,
                     changeSelected = viewModel::changeLotList
                 )
+                Spacer(modifier = Modifier.height(10.dp))
                 LazyColumn(
                     modifier = Modifier.weight(1f)
                 ) {
@@ -168,8 +171,7 @@ fun LotView(
             .fillMaxWidth()
             .padding(10.dp)
             .clickable {
-                val jsonLot = Json.encodeToString(lot)
-                navController.navigate("lot_detail/${jsonLot}")
+                navController.navigate("lot_detail/${lot.id}")
             }
     ) {
         Row(
@@ -178,13 +180,14 @@ fun LotView(
                 .padding(10.dp),
         ) {
             AsyncImage(
-                model = "https://masterpiecer-images.s3.yandex.net/5fab5867404521d:upscaled",
+                model = lot.imageUrl ?: "https://masterpiecer-images.s3.yandex.net/5fab5867404521d:upscaled",
                 contentDescription = "imageLot",
                 modifier = Modifier
                     .size(120.dp)
                     .padding(6.dp)
                     .clip(RoundedCornerShape(15.dp))
-                    .background(Color.LightGray)
+                    .background(Color.LightGray),
+                contentScale = ContentScale.Crop
             )
             Column(
                 modifier = Modifier

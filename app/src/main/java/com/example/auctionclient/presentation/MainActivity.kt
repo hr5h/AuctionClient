@@ -50,8 +50,8 @@ fun MyAppNavHost(navController: NavHostController) {
             LotListScreen(navController = navController)
         }
         composable(
-            route = "lot_detail/{lot}",
-            arguments = listOf(navArgument("lot") { type = NavType.StringType })
+            route = "lot_detail/{lotId}",
+            arguments = listOf(navArgument("lotId") { type = NavType.LongType })
             ) {
                 LotDetailScreen(navController = navController)
             }

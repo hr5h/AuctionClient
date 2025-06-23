@@ -88,6 +88,7 @@ class LotListViewModel @Inject constructor(
                 lotListRepository.createLot(
                     _lotState.value.title,
                     _lotState.value.description,
+                    _lotState.value.imageUrl,
                     _lotState.value.startPrice
                 )
                 _lotState.update { LotState() }

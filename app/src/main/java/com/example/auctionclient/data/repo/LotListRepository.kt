@@ -17,7 +17,7 @@ interface LotListRepository {
 
     suspend fun getLots(): List<Lot>
     suspend fun getWinningLots(): List<Lot>
-    suspend fun createLot(title: String, description: String, startPrice: Float)
+    suspend fun createLot(title: String, description: String, imageUrl: String, startPrice: Float)
 }
 
 class LotListRepositoryImpl @Inject constructor(
@@ -40,9 +40,9 @@ class LotListRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun createLot(title: String, description: String, startPrice: Float) {
+    override suspend fun createLot(title: String, description: String, imageUrl: String, startPrice: Float) {
         if (!internetChecker.isInternetAvailable()) return
-        lotListService.createLot("Bearer ${stompClient.token}", LotApi(title, description, startPrice))
+        lotListService.createLot("Bearer ${stompClient.token}", LotApi(title, description, imageUrl, startPrice))
     }
 
     private fun getUserName(): String {
