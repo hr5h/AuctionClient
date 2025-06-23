@@ -13,8 +13,8 @@ interface LotListService {
     @GET("lots/")
     suspend fun getLots(@Header("Authorization") token: String): List<Lot>
 
-    @GET("lots/{username}/won")
-    suspend fun getWinningLots(@Path("username") username: String, @Header("Authorization") token: String): List<Lot>
+    @GET("lots/me")
+    suspend fun getWinningLots(@Header("Authorization") token: String): List<Lot>
 
     @POST("lots/")
     suspend fun createLot(@Header("Authorization") token: String, @Body lotApi: LotApi)

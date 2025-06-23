@@ -99,7 +99,8 @@ fun LotDetailScreen(
                             contentDescription = "imageLot",
                             modifier = Modifier
                                 .size(100.dp)
-                                .clip(RoundedCornerShape(15.dp)),
+                                .clip(RoundedCornerShape(15.dp))
+                                .background(Color.LightGray),
                             contentScale = ContentScale.Crop
                         )
                         Box(
@@ -153,7 +154,7 @@ fun LotDetailScreen(
                                 .align(Alignment.Start)
                         ) {
                             Text(
-                                text = "Победитель: ",
+                                text = if(lot.status == "SOLD") "Победитель: " else "Лидер: ",
                                 fontSize = 18.sp,
                             )
                             Text(
@@ -179,7 +180,7 @@ fun LotDetailScreen(
             Box(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                if(lot.status == "OPEN") {
+                if(lot.status != "SOLD") {
                     Button(
                         onClick = {
                             viewModel.showBid(true)

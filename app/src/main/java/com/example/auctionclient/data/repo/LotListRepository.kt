@@ -35,7 +35,7 @@ class LotListRepositoryImpl @Inject constructor(
 
     override suspend fun getWinningLots(): List<Lot> {
         if (!internetChecker.isInternetAvailable()) return emptyList()
-        return lotListService.getWinningLots(getUserName(),"Bearer ${stompClient.token}").map { lot ->
+        return lotListService.getWinningLots("Bearer ${stompClient.token}").map { lot ->
             lot.copy(endTime = extractTime(lot.endTime ?: ""))
         }
     }
@@ -43,29 +43,6 @@ class LotListRepositoryImpl @Inject constructor(
     override suspend fun createLot(title: String, description: String, imageUrl: String, startPrice: Float) {
         if (!internetChecker.isInternetAvailable()) return
         lotListService.createLot("Bearer ${stompClient.token}", LotApi(title, description, imageUrl, startPrice))
-    }
-
-    private fun getUserName(): String {
-        return getCurrentUserId(stompClient.token) ?: ""
-    }
-
-    private fun getCurrentUserId(jwtToken: String?): String? {
-        if (jwtToken.isNullOrEmpty()) return null
-
-        return try {
-            val payloadBase64 = jwtToken.split('.')[1]
-                .replace("-", "+")
-                .replace("_", "/")
-
-            val payloadJson = String(Base64.decode(payloadBase64, Base64.DEFAULT))
-            val payload = JSONObject(payloadJson)
-
-            payload.optString("userId").takeIf { it.isNotEmpty() }
-                ?: payload.optString("sub").takeIf { it.isNotEmpty() }
-        } catch (e: Exception) {
-            Log.e("JWT", "Failed to parse JWT", e)
-            null
-        }
     }
 
     private fun extractTime(isoString: String): String {
